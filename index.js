@@ -63,6 +63,13 @@ const interface = {
          chalk.green(`Exporting ${words.length} words!`)
       )
       exportPath = argv.output ? { path: argv.output } : await inquirer.askForOutput()
+      
+      // Ensure exportPath.path is valid
+      if (!exportPath.path || exportPath.path.trim() === '') {
+         console.log(chalk.red("Error: Output path is empty. Using default path."))
+         exportPath.path = './kindle_export.csv'
+      }
+      
       const fields = ['word', 'word_key', 'stem', 'usage', 'book_title', 'timestamp']
       const opts = { fields }
       const csv = json2csv(words, opts)
@@ -70,7 +77,7 @@ const interface = {
          if(err) {
             return console.log(err)
          }
-         console.log(chalk.green("The file was saved!"))
+         console.log(chalk.green("The file was saved to: " + exportPath.path))
       })
    }
 }
